@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>CaféCol CloudApp</title>
+</head>
+<body>
+  <h1>Pedido de Café</h1>
+  <form id="order-form">
+    <label>
+      Nombre:
+      <input type="text" name="name" required />
+    </label>
+    <br />
+    <label>
+      Café:
+      <input type="text" name="drink" required />
+    </label>
+    <br />
+    <label>
+      Tamaño:
+      <select name="size">
+        <option value="small">Pequeño</option>
+        <option value="medium" selected>Mediano</option>
+        <option value="large">Grande</option>
+      </select>
+    </label>
+    <br />
+    <button type="submit">Enviar pedido</button>
+  </form>
+
+  <p id="result"></p>
+
+  <script>
+    const API_URL = "https://0px1nh0h8i.execute-api.us-east-1.amazonaws.com/prod/orders"; // pon aquí tu URL real
+
+    const form = document.getElementById("order-form");
+    const resultEl = document.getElementById("result");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const formData = new FormData(form);
+      const data = {
+        name: formData.get("name"),
+        drink: formData.get("drink"),
+        size: formData.get("size"),
+      };
+
+      resultEl.textContent = "Enviando pedido...";
+
+      try {
+        const response = await fetch(API_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        });
+
+        const json = await response.json();
+        if (response.ok) {
+          resultEl.textContent = json.message;
+        } else {
+          resultEl.textContent = "Error: " + json.message;
+        }
+      } catch (err) {
+        console.error(err);
+        resultEl.textContent = "Error de red al enviar el pedido.";
+      }
+    });
+  </script>
+</body>
+</html>

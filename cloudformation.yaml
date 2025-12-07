@@ -1,0 +1,22 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "Infra básica de CaféCol: S3 + DynamoDB"
+
+Resources:
+  CafeColBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: cafecol-frontend-rips
+      WebsiteConfiguration:
+        IndexDocument: index.html
+
+  CafeColOrdersTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: CafeColOrders
+      AttributeDefinitions:
+        - AttributeName: orderId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: orderId
+          KeyType: HASH
+      BillingMode: PAYPERREQUEST
